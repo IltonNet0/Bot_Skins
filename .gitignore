@@ -1,0 +1,23 @@
+# Ambientes virtuais
+venv/
+.env/
+
+# Cache e compilados do Python
+__pycache__/
+*.pyc
+
+# Configurações de IDE
+.vscode/
+.idea/
+
+# Arquivos do sistema
+.DS_Store
+Thumbs.db
+
+# Arquivos temporários
+*.log
+
+# Apenas para uso local
+BOT-SKINS.xlsx
+
+
