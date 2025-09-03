@@ -10,7 +10,7 @@ from utils import keydrop
 
 options = uc.ChromeOptions()
 
-driver = uc.Chrome(options = options, version_main=138)
+driver = uc.Chrome(options = options, version_main=140)
 
 
 
