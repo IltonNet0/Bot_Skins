@@ -16,8 +16,10 @@ Thumbs.db
 
 # Arquivos temporários
 *.log
+Test.txt
 
 # Apenas para uso local
 BOT-SKINS.xlsx
 
-
+# Cookies
+cookies_key-drop.pkl

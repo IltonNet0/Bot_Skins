@@ -20,4 +20,5 @@ for i, row in sheet.iterrows():
 
     if row['LINK'] == 'https://key-drop.com/pt/daily-case':
         driver.get(row['LINK'])
+        driver.maximize_window()
         sheet.loc[i, 'AWARD'] = keydrop(driver, row)
