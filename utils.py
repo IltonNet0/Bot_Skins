@@ -14,7 +14,8 @@ locator = {
     'username_input': (By.XPATH, '//*[@id="responsive_page_template_content"]/div[1]/div[1]/div/div/div/div[2]/div/form/div[1]/input'),
     'password_input': (By.XPATH, '//*[@id="responsive_page_template_content"]/div[1]/div[1]/div/div/div/div[2]/div/form/div[2]/input'),
     'login_steam': (By.XPATH, '//*[@id="responsive_page_template_content"]/div[1]/div[1]/div/div/div/div[2]/div/form/div[4]'),
-    'close_sell': (By.XPATH, '//*[@id="headlessui-dialog-panel-:r8m:"]/div[2]/button[1]')
+    'close_sell': (By.XPATH, '//*[@id="headlessui-dialog-panel-:r8m:"]/div[2]/button[1]'),
+    'award_keydrop': (By.XPATH,'/html/body/div[1]/main/div[3]/ul/li[1]/button/div/div/canvas'),
 }
 
 def save_cookies(driver, file):
@@ -38,6 +39,14 @@ def keydrop(driver, row):
         driver.add_cookie(cookie)
 
     driver.refresh()
+
+    try:
+        WebDriverWait(driver, 30).until(EC.element_to_be_clickable(locator['close_sell'])).click()
+    except:
+        WebDriverWait(driver, 30).until(EC.element_to_be_clickable(locator['award_keydrop'])).click()
+
+
+
     sleep(2)
 
     sleep(5)
