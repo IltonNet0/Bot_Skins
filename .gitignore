@@ -23,3 +23,6 @@ BOT-SKINS.xlsx
 
 # Cookies
 cookies_key-drop.pkl
+
+# Banco de dados SQLite
+my_inventory.db
