@@ -16,6 +16,8 @@ locator = {
     'login_steam': (By.XPATH, '//*[@id="responsive_page_template_content"]/div[1]/div[1]/div/div/div/div[2]/div/form/div[4]'),
     'close_sell': (By.XPATH, '/html/body/div[8]/div/div/div/div[2]/div/div[3]/div[2]/button[1]'),
     'award_keydrop': (By.XPATH,'/html/body/div[1]/main/div[3]/ul/li[1]/button/div/div/canvas'),
+    'box_skinclub': (By.XPATH,'/html/body/div[1]/div/div[5]/div/div[3]/a[1]/div/div'),
+    'award_skinclub': (By.XPATH,'/html/body/div[1]/div/div[5]/div[1]/div[3]/div/button')
 }
 
 def save_cookies(driver, file):
@@ -37,7 +39,11 @@ def keydrop(driver, row):
     # sleep(5)
     # save_cookies(driver, "cookies_key-drop.pkl")
 
+
+
     load_cookies(driver, "cookies_key-drop.pkl")
+
+    sleep(5)
 
     redeem_buttom = driver.find_element(*locator['award_keydrop'])
     driver.execute_script("arguments[0].scrollIntoView({block: 'center'});", redeem_buttom)
@@ -47,9 +53,55 @@ def keydrop(driver, row):
     except:
         WebDriverWait(driver, 30).until(EC.element_to_be_clickable(locator['award_keydrop'])).click()
 
+    # item_name
+    # rarity 
+    # value
 
 
     sleep(5)
+
+
+
+
+
+    return "AWARD"
+
+def skinclub(driver, row):
+
+    # sleep(5)
+    # save_cookies(driver, "cookies_skinclub.pkl")
+
+
+
+    # load_cookies(driver, "cookies_skinclub.pkl")
+
+    sleep(5)
+
+    redeem_buttom = driver.find_element(*locator['box_skinclub'])
+    driver.execute_script("arguments[0].scrollIntoView({block: 'center'});", redeem_buttom)
+
+    WebDriverWait(driver, 30).until(EC.element_to_be_clickable(locator['box_skinclub'])).click()
+
+    redeem_buttom = driver.find_element(*locator['award_skinclub'])
+    driver.execute_script("arguments[0].scrollIntoView({block: 'center'});", redeem_buttom)
+
+    sleep(2)
+
+    WebDriverWait(driver, 30).until(EC.element_to_be_clickable(locator['award_skinclub'])).click()
+
+    sleep(5)
+
+
+
+    # item_name
+    # rarity 
+    # value
+
+
+    sleep(5)
+
+
+
 
 
     return "AWARD"
