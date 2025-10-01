@@ -6,7 +6,7 @@ from time import sleep
 import pandas as pd
 from selenium.webdriver.common.keys import Keys
 
-from utils import keydrop
+from utils import keydrop, skinclub, csgoskins
 
 options = uc.ChromeOptions()
 
@@ -18,7 +18,7 @@ sheet = pd.read_excel('BOT-SKINS.xlsx')
 
 for i, row in sheet.iterrows():
 
-    if row['LINK'] == 'https://key-drop.com/pt/daily-case':
+    if row['LINK'] == 'https://csgo-skins.com/case/daily-case':
         driver.get(row['LINK'])
         driver.maximize_window()
-        sheet.loc[i, 'AWARD'] = keydrop(driver, row)
+        sheet.loc[i, 'AWARD'] = csgoskins(driver, row)

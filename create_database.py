@@ -21,8 +21,9 @@ try:
     create_table_skins = """
     CREATE TABLE IF NOT EXISTS skins (
         id INTEGER PRIMARY KEY AUTOINCREMENT,
-        item_name TEXT NOT NULL,
-        rarity TEXT,
+        gun_name TEXT NOT NULL,
+        skin_name TEXT NOT NULL,
+        rarity TEXT NOT NULL,
         source_site TEXT NOT NULL,
         collection_date TEXT NOT NULL,
         value REAL,
