@@ -5,6 +5,7 @@ from selenium.webdriver.common.keys import Keys
 from time import sleep
 import pickle
 import sqlite3
+import datetime
 
 locator = {
     # Key-Drop
@@ -43,18 +44,40 @@ def load_cookies(driver,file):
 
     driver.refresh()
 
-def salvar_skin_no_banco(nome, tipo_skin, cond):
-    """Insere os dados de uma skin no banco de dados."""
+def saving_on_database(gun_name, skin_name, user_id, value, rarity, website):
+    db_file = "my_inventory.db"
+    conn = None
+
     try:
-        conn = sqlite3.connect('my_inventory.db')
+        conn = sqlite3.connect(db_file)
         cursor = conn.cursor()
-        sql_insert = "INSERT INTO skins (nome, tipo, condicao) VALUES (?, ?, ?)"
-        dados_da_skin = (nome, tipo_skin, cond)
+
+
+        rarity_check = rarity if rarity else "Rarity not defined"
+        source_site = website if website else "Website not defined"
+        
+
+        collection_date = datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+
+
+        sql_insert = """
+            INSERT INTO skins 
+            (gun_name, skin_name, rarity, source_site, collection_date, value, user_id) 
+            VALUES (?, ?, ?, ?, ?, ?, ?)
+        """
+        
+
+        dados_da_skin = (gun_name, skin_name, rarity_check, source_site, collection_date, value, user_id)
+
         cursor.execute(sql_insert, dados_da_skin)
+        
         conn.commit()
-        print(f"✅ Skin '{nome} - {cond}' salva no banco de dados com sucesso!")
+        
+
+
     except sqlite3.Error as e:
         print(f"❌ Erro ao inserir dados no banco de dados: {e}")
+
     finally:
         if conn:
             conn.close()
@@ -135,7 +158,6 @@ def skinclub(driver, row):
 
     return "AWARD"
 
-
 def csgoskins(driver, row):
 
     sleep(5)
@@ -179,7 +201,10 @@ def csgoskins(driver, row):
     print(f"Condição: {rarity}")
 
 
+    try:
+        saving_on_database(gun_name, skin_name, row[id], value_item, rarity, "CSGO-SKINS")
+    except Exception as e:
+        print(f"Erro ao salvar no banco de dados: {e}")
+
+
     sleep(5)
-    # item_name
-    # rarity 
-    # value
