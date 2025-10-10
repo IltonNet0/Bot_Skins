@@ -82,8 +82,19 @@ def saving_on_database(gun_name, skin_name, user_id, value, rarity, website):
         if conn:
             conn.close()
 
+def buscar_usuarios_ativos():
 
+    DB_FILE = "my_inventory.db"
 
+    conn = sqlite3.connect(DB_FILE)
+    conn.row_factory = sqlite3.Row  
+    cursor = conn.cursor()
+    
+    cursor.execute("SELECT id, steam_id, nome_perfil, email, password FROM users")
+    
+    list_users = [dict(row) for row in cursor.fetchall()]
+    conn.close()
+    return list_users
 
 
 def keydrop(driver, row):
@@ -160,51 +171,50 @@ def skinclub(driver, row):
 
 def csgoskins(driver, row):
 
-    sleep(5)
-
-
-    load_cookies(driver, "csgoskins.pkl")
-
-    redeem_buttom = driver.find_element(*locator['box_csgoskins'])
-    driver.execute_script("arguments[0].scrollIntoView({block: 'center'});", redeem_buttom)
-
-    WebDriverWait(driver, 30).until(EC.element_to_be_clickable(locator['box_csgoskins'])).click()
-
-    item_div = driver.find_element(*locator['item_div'])
-
-    skin_name = WebDriverWait(driver, 30).until(EC.presence_of_element_located(locator['skin_name'])).text
-
-    script_js = """
-    const element = arguments[0];
-    const childNodes = element.childNodes;
-    const textNodes = [];
-
-    for (let i = 0; i < childNodes.length; i++) {
-        if (childNodes[i].nodeType === 3 && childNodes[i].textContent.trim() !== '') {
-            textNodes.push(childNodes[i].textContent.trim());
-        }
-    }
-
-    return textNodes;
-"""
-
-    textos_soltos = driver.execute_script(script_js, item_div)
-
-
-    gun_name = textos_soltos[0] if len(textos_soltos) > 0 else "Não encontrado"
-    rarity = textos_soltos[1] if len(textos_soltos) > 1 else "Não encontrado"
-
-    value_item = WebDriverWait(driver, 30).until(EC.presence_of_element_located(locator['value_item'])).text
-
-    print(f"Nome da Skin: {skin_name}")
-    print(f"Tipo: {gun_name}")
-    print(f"Condição: {rarity}")
-
 
     try:
-        saving_on_database(gun_name, skin_name, row[id], value_item, rarity, "CSGO-SKINS")
+        sleep(5)
+
+        load_cookies(driver, "csgoskins.pkl")
+
+        redeem_buttom = driver.find_element(*locator['box_csgoskins'])
+        driver.execute_script("arguments[0].scrollIntoView({block: 'center'});", redeem_buttom)
+
+        WebDriverWait(driver, 30).until(EC.element_to_be_clickable(locator['box_csgoskins'])).click()
+
+        item_div = driver.find_element(*locator['item_div'])
+
+        skin_name = WebDriverWait(driver, 30).until(EC.presence_of_element_located(locator['skin_name'])).text
+
+        script_js = """
+        const element = arguments[0];
+        const childNodes = element.childNodes;
+        const textNodes = [];
+
+        for (let i = 0; i < childNodes.length; i++) {
+            if (childNodes[i].nodeType === 3 && childNodes[i].textContent.trim() !== '') {
+                textNodes.push(childNodes[i].textContent.trim());
+            }
+        }
+
+        return textNodes;"""
+
+        textos_soltos = driver.execute_script(script_js, item_div)
+
+
+        gun_name = textos_soltos[0] if len(textos_soltos) > 0 else "Not found"
+        rarity = textos_soltos[1] if len(textos_soltos) > 1 else "Not found"
+
+        value_item = WebDriverWait(driver, 30).until(EC.presence_of_element_located(locator['value_item'])).text
+
+        try:
+            saving_on_database(gun_name, skin_name, row[id], value_item, rarity, "CSGO-SKINS")
+
+        except Exception as e:        
+            print(f"Erro ao salvar no banco de dados: {e}")
+
     except Exception as e:
-        print(f"Erro ao salvar no banco de dados: {e}")
+        print(f"Erro ao capturar a skin: {e}")
+        saving_on_database('...', '...', '...', '...', '...', "CSGO-SKINS")
 
-
-    sleep(5)
+sleep(5)

@@ -6,19 +6,17 @@ from time import sleep
 import pandas as pd
 from selenium.webdriver.common.keys import Keys
 
-from utils import keydrop, skinclub, csgoskins
+from utils import keydrop, skinclub, csgoskins, buscar_usuarios_ativos
 
 options = uc.ChromeOptions()
 
 driver = uc.Chrome(options = options, version_main=140)
 
 
+list_users = buscar_usuarios_ativos()
 
-sheet = pd.read_excel('BOT-SKINS.xlsx')
+for row in list_users:
 
-for i, row in sheet.iterrows():
-
-    if row['LINK'] == 'https://csgo-skins.com/case/daily-case':
-        driver.get(row['LINK'])
-        driver.maximize_window()
-        sheet.loc[i, 'AWARD'] = csgoskins(driver, row)
+    driver.get('https://csgo-skins.com/case/daily-case')
+    driver.maximize_window()
+    csgoskins(driver, row)
