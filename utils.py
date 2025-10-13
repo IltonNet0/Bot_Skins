@@ -208,7 +208,7 @@ def csgoskins(driver, row):
         value_item = WebDriverWait(driver, 30).until(EC.presence_of_element_located(locator['value_item'])).text
 
         try:
-            saving_on_database(gun_name, skin_name, row[id], value_item, rarity, "CSGO-SKINS")
+            saving_on_database(gun_name, skin_name, row['id'], value_item, rarity, "CSGO-SKINS")
 
         except Exception as e:        
             print(f"Erro ao salvar no banco de dados: {e}")
@@ -216,5 +216,8 @@ def csgoskins(driver, row):
     except Exception as e:
         print(f"Erro ao capturar a skin: {e}")
         saving_on_database('...', '...', '...', '...', '...', "CSGO-SKINS")
+
+    finally:
+        driver.quit()
 
 sleep(5)
