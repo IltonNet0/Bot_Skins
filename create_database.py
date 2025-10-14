@@ -32,10 +32,22 @@ try:
     );
     """
 
+    create_table_sites = """
+    CREATE TABLE IF NOT EXISTS sites (
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        site_link TEXT NOT NULL,
+        telegram_token TEXT,
+        chat_id TEXT,
+        status TEXT NOT NULL
+    );
+    """
+
+
     cursor.execute(create_table_user)
 
     cursor.execute(create_table_skins)
 
+    cursor.execute(create_table_sites)
 
     conn.commit()
 
