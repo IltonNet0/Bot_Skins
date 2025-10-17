@@ -37,8 +37,8 @@ try:
         id INTEGER PRIMARY KEY AUTOINCREMENT,
         site_link TEXT NOT NULL,
         telegram_token TEXT,
-        chat_id TEXT,
-        status TEXT NOT NULL
+        chat_id TEXT NOT NULL,
+        message_thread_id INTEGER
     );
     """
 

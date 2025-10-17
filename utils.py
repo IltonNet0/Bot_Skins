@@ -3,6 +3,7 @@ from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.common.keys import Keys
 from time import sleep
+from notifications import send_telegram_message
 import pickle
 import sqlite3
 import datetime
@@ -12,7 +13,7 @@ locator = {
     'join_keydrop': (By.XPATH, '//*[@id="app-root"]/header/div/div[2]/a'),
     'login_keydrop': (By.XPATH, '/html/body/reach-portal/div[3]/div/div/div/div/div/div[2]/div[2]/button'),
     'close_sell': (By.XPATH, '/html/body/div[8]/div/div/div/div[2]/div/div[3]/div[2]/button[1]'),
-    'award_keydrop': (By.XPATH,'/html/body/div[1]/main/div[3]/ul/li[1]/button/div/div/canvas'),
+    'reward_keydrop': (By.XPATH,'/html/body/div[1]/main/div[3]/ul/li[1]/button/div/div/canvas'),
 
     # Steam
     'username_input': (By.XPATH, '//*[@id="responsive_page_template_content"]/div[1]/div[1]/div/div/div/div[2]/div/form/div[1]/input'),
@@ -21,14 +22,15 @@ locator = {
 
     # Skin-Club
     'box_skinclub': (By.XPATH,'/html/body/div[1]/div/div[5]/div/div[3]/a[1]/div/div'),
-    'award_skinclub': (By.XPATH,'/html/body/div[1]/div/div[5]/div[1]/div[3]/div/button'),
+    'reward_skinclub': (By.XPATH,'/html/body/div[1]/div/div[5]/div[1]/div[3]/div/button'),
 
     # CSGO-SKINS
     'box_csgoskins': (By.XPATH,'/html/body/div[1]/div/div/main/div/section[1]/div[2]/div[1]/button'),
-    'award_csgoskins': (By.XPATH,'/html/body/div[1]/div/div/main/div/section[1]/div[1]/div/div[2]/div/ul/li[42]/div[1]'),
+    'reward_csgoskins': (By.XPATH,'/html/body/div[1]/div/div/main/div/section[1]/div[1]/div/div[2]/div/ul/li[42]/div[1]'),
     'item_div': (By.CSS_SELECTOR,'#__layout > div > main > div > section.AppPage_section.section--control > div.section_tapes > div > div.ContainerTape.ContainerTape--list-ended > div > ul > li.ContainerTape_item.item--featured.item--won > div.item_name'),
     'skin_name': (By.XPATH,'/html/body/div[1]/div/div/main/div/section[1]/div[1]/div/div[2]/div/ul/li[42]/div[1]/span'),
-    'value_item': (By.XPATH,'/html/body/div[1]/div/div/main/div/section[1]/div[2]/div[1]/button[1]/span/span')
+    'value_item': (By.XPATH,'/html/body/div[1]/div/div/main/div/section[1]/div[2]/div[1]/button[1]/span/span'),
+    'csgoskins': (By.XPATH,'/html/body/div[1]/div/div/header/div/div[1]/a')
 }
 
 def save_cookies(driver, file):
@@ -82,7 +84,7 @@ def saving_on_database(gun_name, skin_name, user_id, value, rarity, website):
         if conn:
             conn.close()
 
-def buscar_usuarios_ativos():
+def search_active_users ():
 
     DB_FILE = "my_inventory.db"
 
@@ -108,13 +110,13 @@ def keydrop(driver, row):
 
     sleep(5)
 
-    redeem_buttom = driver.find_element(*locator['award_keydrop'])
+    redeem_buttom = driver.find_element(*locator['reward_keydrop'])
     driver.execute_script("arguments[0].scrollIntoView({block: 'center'});", redeem_buttom)
 
     try:
         WebDriverWait(driver, 30).until(EC.element_to_be_clickable(locator['close_sell'])).click()
     except:
-        WebDriverWait(driver, 30).until(EC.element_to_be_clickable(locator['award_keydrop'])).click()
+        WebDriverWait(driver, 30).until(EC.element_to_be_clickable(locator['reward_keydrop'])).click()
 
     # item_name
     # rarity 
@@ -145,12 +147,12 @@ def skinclub(driver, row):
 
     WebDriverWait(driver, 30).until(EC.element_to_be_clickable(locator['box_skinclub'])).click()
 
-    redeem_buttom = driver.find_element(*locator['award_skinclub'])
+    redeem_buttom = driver.find_element(*locator['reward_skinclub'])
     driver.execute_script("arguments[0].scrollIntoView({block: 'center'});", redeem_buttom)
 
     sleep(2)
 
-    WebDriverWait(driver, 30).until(EC.element_to_be_clickable(locator['award_skinclub'])).click()
+    WebDriverWait(driver, 30).until(EC.element_to_be_clickable(locator['reward_skinclub'])).click()
 
     sleep(5)
 
@@ -173,18 +175,23 @@ def csgoskins(driver, row):
 
 
     try:
+        
         sleep(5)
 
         load_cookies(driver, "csgoskins.pkl")
 
-        redeem_buttom = driver.find_element(*locator['box_csgoskins'])
+        sleep(10)
+
+        redeem_buttom = WebDriverWait(driver, 10).until(EC.presence_of_element_located(locator['box_csgoskins']))
         driver.execute_script("arguments[0].scrollIntoView({block: 'center'});", redeem_buttom)
 
         WebDriverWait(driver, 30).until(EC.element_to_be_clickable(locator['box_csgoskins'])).click()
 
-        item_div = driver.find_element(*locator['item_div'])
+        sleep(2)
 
         skin_name = WebDriverWait(driver, 30).until(EC.presence_of_element_located(locator['skin_name'])).text
+
+        item_div = WebDriverWait(driver, 30).until(EC.presence_of_element_located(locator['item_div']))
 
         script_js = """
         const element = arguments[0];
@@ -199,19 +206,38 @@ def csgoskins(driver, row):
 
         return textNodes;"""
 
-        textos_soltos = driver.execute_script(script_js, item_div)
+        texts = driver.execute_script(script_js, item_div)
 
 
-        gun_name = textos_soltos[0] if len(textos_soltos) > 0 else "Not found"
-        rarity = textos_soltos[1] if len(textos_soltos) > 1 else "Not found"
+        gun_name = texts[0] if len(texts) > 0 else "Not found"
+        rarity = texts[1] if len(texts) > 1 else "Not found"
 
         value_item = WebDriverWait(driver, 30).until(EC.presence_of_element_located(locator['value_item'])).text
+
 
         try:
             saving_on_database(gun_name, skin_name, row['id'], value_item, rarity, "CSGO-SKINS")
 
         except Exception as e:        
             print(f"Erro ao salvar no banco de dados: {e}")
+
+
+        try:
+            reward = {
+                'gun_name': gun_name,
+                'skin_name': skin_name,
+                'rarity': rarity,
+                'value_item': value_item
+            }
+
+            send_telegram_message(1, reward)
+
+
+
+
+        
+        except Exception as e:
+            print(f"Erro ao criar o dicionário de recompensa: {e}")
 
     except Exception as e:
         print(f"Erro ao capturar a skin: {e}")
@@ -220,4 +246,3 @@ def csgoskins(driver, row):
     finally:
         driver.quit()
 
-sleep(5)
