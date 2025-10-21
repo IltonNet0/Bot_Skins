@@ -19,4 +19,4 @@ for row in list_users:
 
     driver.get('https://csgo-skins.com/case/daily-case')
     driver.maximize_window()
-    csgoskins(driver, row)
+    csgo_skins = csgoskins(driver, row)

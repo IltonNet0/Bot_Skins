@@ -229,8 +229,8 @@ def csgoskins(driver, row):
                 'rarity': rarity,
                 'value_item': value_item
             }
-
-            send_telegram_message(1, reward)
+            menssage = f"🎉 New Skin Captured!\n\n Gun: {reward['gun_name']}\n Skin: {reward['skin_name']}\n Rarity: {reward['rarity']}\n Value: {reward['value_item']}"
+            send_telegram_message(1, reward, menssage)
             print("✅ Reward captured and notification sent.")
 
 
@@ -244,4 +244,9 @@ def csgoskins(driver, row):
 
     finally:
         driver.quit()
+
+        if value_item > 10:
+            return reward
+        else:
+            return None
 
