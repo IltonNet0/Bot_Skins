@@ -175,7 +175,7 @@ def csgoskins(driver, row):
 
 
     try:
-        
+
         sleep(5)
 
         load_cookies(driver, "csgoskins.pkl")
@@ -219,7 +219,7 @@ def csgoskins(driver, row):
             saving_on_database(gun_name, skin_name, row['id'], value_item, rarity, "CSGO-SKINS")
 
         except Exception as e:        
-            print(f"Erro ao salvar no banco de dados: {e}")
+            print(f"Error saving to database: {e}")
 
 
         try:
@@ -231,16 +231,15 @@ def csgoskins(driver, row):
             }
 
             send_telegram_message(1, reward)
+            print("✅ Reward captured and notification sent.")
 
 
 
-
-        
         except Exception as e:
-            print(f"Erro ao criar o dicionário de recompensa: {e}")
+            print(f"Error creating reward dictionary: {e}")
 
     except Exception as e:
-        print(f"Erro ao capturar a skin: {e}")
+        print(f"Error capturing skin: {e}")
         saving_on_database('...', '...', '...', '...', '...', "CSGO-SKINS")
 
     finally:

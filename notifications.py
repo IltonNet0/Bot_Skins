@@ -21,3 +21,4 @@ def send_telegram_message(id, reward):
     telegram = search_active_sites(id)                    
 
 
+    url_api = f"https://api.telegram.org/bot{telegram['telegram_token']}/sendMessage"
