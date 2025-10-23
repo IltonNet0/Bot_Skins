@@ -98,6 +98,20 @@ def search_active_users ():
     conn.close()
     return list_users
 
+def convert_to_float(value_item):
+
+    try:
+        value_item = value_item.replace('$', '').strip()
+        return float(value_item)
+    except ValueError:
+            print("Conversion to float failed, trying Brazilian format...")
+    
+    try:
+        value_item = value_item.replace('R$', '').replace(',', '').strip()
+        return float(value_item)
+    except ValueError: 
+            print("Conversion to float failed.")
+
 
 def keydrop(driver, row):
 
@@ -209,8 +223,8 @@ def csgoskins(driver, row):
         texts = driver.execute_script(script_js, item_div)
 
 
-        gun_name = texts[0] if len(texts) > 0 else "Not found"
-        rarity = texts[1] if len(texts) > 1 else "Not found"
+        gun_name = texts[0] if len(texts) > 0 or texts[0] == None else "Not found"
+        rarity = texts[1] if len(texts) > 1 or texts[0] == None else "Not found"
 
         value_item = WebDriverWait(driver, 30).until(EC.presence_of_element_located(locator['value_item'])).text
 
@@ -245,6 +259,8 @@ def csgoskins(driver, row):
     finally:
         driver.quit()
 
+
+        value_item = convert_to_float(value_item)
         if value_item > 10:
             return reward
         else:

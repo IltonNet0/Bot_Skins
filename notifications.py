@@ -48,5 +48,3 @@ def send_telegram_message(id, reward, menssage):
         return False
     
 
-
-send_telegram_message(1, {}, "Mensagem enviada por código de teste com sucesso 🎉.")
