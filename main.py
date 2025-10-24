@@ -17,6 +17,11 @@ list_users = search_active_users()
 
 for row in list_users:
 
-    driver.get('https://csgo-skins.com/case/daily-case')
+    # driver.get('https://csgo-skins.com/case/daily-case')
+    # driver.maximize_window()
+    # csgo_skins = csgoskins(driver, row)
+    
+
+    driver.get('https://key-drop.com/pt/daily-case/level/0')
     driver.maximize_window()
-    csgo_skins = csgoskins(driver, row)
+    csgo_skins = keydrop(driver, row)
