@@ -17,9 +17,7 @@ def search_active_sites(id):
 
 
 
-
-
-def send_telegram_message(id, reward, menssage):
+def send_telegram_message(id, menssage):
     
     telegram = search_active_sites(id)                    
 
@@ -47,4 +45,3 @@ def send_telegram_message(id, reward, menssage):
         print(f"An error occurred while sending the message: {e}")
         return False
     
-

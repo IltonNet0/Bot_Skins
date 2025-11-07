@@ -200,7 +200,7 @@ def csgoskins(driver, row):
 
     try:
 
-        sleep(5)
+        sleep(10)
 
         load_cookies(driver, "csgoskins.pkl")
 
@@ -238,7 +238,6 @@ def csgoskins(driver, row):
 
         value_item = WebDriverWait(driver, 30).until(EC.presence_of_element_located(locator['value_item'])).text
 
-
         try:
             saving_on_database(gun_name, skin_name, row['id'], value_item, rarity, "CSGO-SKINS")
 
@@ -254,7 +253,7 @@ def csgoskins(driver, row):
                 'value_item': value_item
             }
             menssage = f"🎉 New Skin Captured!\n\n Gun: {reward['gun_name']}\n Skin: {reward['skin_name']}\n Rarity: {reward['rarity']}\n Value: {reward['value_item']}"
-            send_telegram_message(1, reward, menssage)
+            send_telegram_message(1, menssage)
             print("✅ Reward captured and notification sent.")
 
 
@@ -268,11 +267,5 @@ def csgoskins(driver, row):
 
     finally:
         driver.quit()
-
-
-        value_item = convert_to_float(value_item)
-        if value_item > 10:
-            return reward
-        else:
-            return None
+        return None
 
